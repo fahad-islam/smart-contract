@@ -7,9 +7,9 @@ async function main() {
     const simpleStorageFactory = await ethers.getContractFactory(
         "SimpleStorage"
     )
-    
+
     /** Deploy the contract via Contract Factory
-     * */ 
+     * */
     console.log("Deploying contract....")
     const simpleStorage = await simpleStorageFactory.deploy()
     await simpleStorage.deployed()
@@ -21,18 +21,27 @@ async function main() {
     }
 
     /** let's Interact with contract
-     * */ 
+     * */
     // GET current Value
     const currentValue = await simpleStorage.retrieve()
     console.log(`Current Favorite Value is: ${currentValue}`)
 
     // UPDATE current Value
-    const transactionResponse = await simpleStorage.store(17)
+    const transactionResponse = await simpleStorage.store("17")
     await transactionResponse.wait(1)
 
     // GET updated Value
     const updatedValue = await simpleStorage.retrieve()
     console.log(`Updated Favorite Value is: ${updatedValue}`)
+
+    // add New Person to the people map
+    const firstPerson = await simpleStorage.addPerson("Fahad", "18")
+    const secondPerson = await simpleStorage.addPerson("Islam", "18")
+    console.dir({firstPerson, secondPerson})
+
+    // GET favoriteNumber, (@param: name)! Just added above
+    const person = await simpleStorage.nameToFavoriteNumber("Fahad")
+    console.dir({person: { name: "Fahad", favoriteNumber: person.toString() }})
 }
 
 async function verify(contractAddress, args) {
